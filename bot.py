@@ -2,6 +2,36 @@
 # -*- coding: utf-8 -*-
 # (c) Shrimadhav U K | Modifieded By : @DC4_WARRIOR
 
+
+
+import ntplib
+import time
+import os
+
+# টাইমজোন UTC করে দাও
+os.environ['TZ'] = 'UTC'
+time.tzset()
+
+try:
+    ntp_client = ntplib.NTPClient()
+    response = ntp_client.request('pool.ntp.org')
+    ntp_time = response.tx_time
+    local_time = time.time()
+    time_diff = abs(local_time - ntp_time)
+
+    if time_diff > 5:
+        print(f"সার্ভারের সময় {time_diff:.2f} সেকেন্ড পিছিয়ে। Telegram কাজ করবে না।")
+        exit("সময় সিঙ্ক করানো যায়নি।")
+
+except Exception as e:
+    print("NTP দিয়ে সময় আনা যায়নি:", e)
+    exit("সমস্যা হয়েছে সময় সিঙ্ক করতে।")
+
+
+
+
+
+
 import os
 import logging
 from config import Config
